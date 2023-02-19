@@ -1,6 +1,8 @@
 package com.devEx.utilities;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 
 public class ConfigurationReader {
@@ -22,5 +24,16 @@ public class ConfigurationReader {
 
     public static String get(String keyName){
         return properties.getProperty(keyName);
+    }
+
+    public static void set(String keyName, String value){
+        String path = "Configuration.properties";
+        try {
+            OutputStream output = new FileOutputStream(path);
+            properties.setProperty(keyName, value);
+            properties.store(output,null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

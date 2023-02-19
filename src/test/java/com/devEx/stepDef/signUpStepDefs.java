@@ -1,6 +1,9 @@
 package com.devEx.stepDef;
 
 import com.devEx.common.DataForApi;
+import com.devEx.request.DevExRequest;
+import com.devEx.utilities.ConfigurationReader;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.restassured.http.ContentType;
@@ -27,5 +30,57 @@ public class signUpStepDefs {
     @Then("Verify that status code for register request is {int}")
     public void verifyThatStatusCodeForRegisterRequestIs(int expectedStatusCode) {
         Assert.assertEquals(expectedStatusCode, response.statusCode());
+    }
+
+    @And("Compiler gets the token")
+    public void comilerGetsTheToken() {
+     String token = response.path("token");
+        ConfigurationReader.set("newUserToken" , token);
+    }
+
+    @Given("User creates a POST request and send the token with {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string}")
+    public void userCreatesAPOSTRequestAndSendTheTokenWith(String company, String webSite, String location, String status,
+                                                           String skills,String githubusername, String youtube, String twitter,
+                                                           String facebook, String linkedin, String instagram) {
+            response= DevExRequest.postSaveProfile(company, webSite, location, status, skills, githubusername, youtube, twitter, facebook, linkedin, instagram);
+
+    }
+
+    @Then("Verify that status code should be {int}")
+    public void verifyThatStatusCodeShouldBe(int expectedStatusCode) {
+        Assert.assertEquals(expectedStatusCode, response.statusCode());
+    }
+
+    @Then("verify that name {string} and email as {string}")
+    public void verifyThatNameAndEmailAs(String expectedName, String expectedEmail) {
+        Assert.assertEquals(expectedName,response.path("user.name"));
+        Assert.assertEquals(expectedEmail,response.path("user.email"));
+    }
+
+    @Given("User creates a POST request for add an experience with {string} {string} {string} {string}  {string} {string} {string}")
+    public void userCreatesAPOSTRequestForAddAnExperienceWith(String title,String company, String location, String from, String to, String current, String description) {
+
+        response= DevExRequest.postExperience(title, company, location, from, to, current, description);
+    }
+
+    int id;
+    @And("Compiler gets the experience id")
+    public void compilerGetsTheExperienceId() {
+        id = response.path("experience.id[0]");
+    }
+
+
+    @And("User creates GET request to get experience with id")
+    public void userCreatesGETRequestToGetExperienceWithId() {
+    response = DevExRequest.getExperience(id);
+
+    }
+
+    @And("User is on the dashboard page")
+    public void userIsOnTheDashboardPage() {
+    }
+
+    @Then("Verify that UI experience and API experience must be matched on company as {string}")
+    public void verifyThatUIExperienceAndAPIExperienceMustBeMatchedOnCompanyAs(String arg0) {
     }
 }
