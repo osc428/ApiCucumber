@@ -1,6 +1,7 @@
 package com.devEx.stepDef;
 
 import com.devEx.common.DataForApi;
+import com.devEx.pages.LoginPage;
 import com.devEx.request.DevExRequest;
 import com.devEx.utilities.ConfigurationReader;
 import io.cucumber.java.en.And;
@@ -77,10 +78,14 @@ public class signUpStepDefs {
     }
 
     @And("User is on the dashboard page")
-    public void userIsOnTheDashboardPage() {
+    public void userIsOnTheDashboardPage() throws InterruptedException {
+        new LoginPage().setup();
     }
 
     @Then("Verify that UI experience and API experience must be matched on company as {string}")
-    public void verifyThatUIExperienceAndAPIExperienceMustBeMatchedOnCompanyAs(String arg0) {
+    public void verifyThatUIExperienceAndAPIExperienceMustBeMatchedOnCompanyAs(String expectedCompany) {
+        String actualCompanyFromUrl = new  LoginPage().getNewCompany(expectedCompany);
+        String actaulCompanyFromAPI = response.path("company");
+        Assert.assertEquals(actaulCompanyFromAPI,actualCompanyFromUrl);
     }
 }
